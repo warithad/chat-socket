@@ -1,0 +1,11 @@
+{
+    "compilerOptions": {
+        "sourceMap": true,
+        "lib": ["es2016", "esnext.asynciterable"],
+        "esModuleInterop": true,
+        "strict": true,
+        "outDir": "dist"
+    },
+    "include": ["./**/*.ts"],
+    "exclude": ["node_modules"]
+  }
