@@ -1,5 +1,6 @@
 export class AppError extends Error {
     statusCode = 400
+    type = ''
     static typeToCode = {
         validation: 400,
         unauthorized: 401,
@@ -9,6 +10,7 @@ export class AppError extends Error {
     constructor(type: keyof typeof AppError.typeToCode, message: string){
         super(message)
         Object.setPrototypeOf(this, new.target.prototype)
+        this.type = type
         this.name = Error.name
         this.statusCode = AppError.typeToCode[type]
         Error.captureStackTrace(this)

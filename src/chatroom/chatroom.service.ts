@@ -1,6 +1,5 @@
 import { Prisma } from '@prisma/client'
 import prisma from '../lib/prisma'
-import { CreateMessageSchema } from './chatroom.schemas'
 
 export const getChatRoomMembers =async(id: string)=>{
     return await prisma.userChatRoom.findMany({
@@ -16,6 +15,28 @@ export const getChatRoomMembers =async(id: string)=>{
             }
         }
     })
+}
+
+export const getUserChatRooms = async(userId: string)=>{
+    return await prisma.userChatRoom.findMany({
+        where: {
+            userId
+        },
+        select: {
+            chatRoom: {
+                select: {
+                    id: true,
+                    title: true
+                }
+            }           
+        }
+    }).then(userChatRooms => userChatRooms.map(({chatRoom}) => chatRoom))    
+    
+}
+
+export const getUserChatRoomIds = async(userId: string)=>{
+    const chatRooms = await getUserChatRooms(userId);
+    return chatRooms.map((chatRoom) => chatRoom.id);
 }
 
 export const getChatRoomMessages = async(id: string, startDate: Date, endDate: Date)=>{
@@ -67,3 +88,34 @@ export const createChatRoom = async(chatRoomData: Prisma.ChatRoomCreateInput)=>{
     })
 }
 
+export const joinChatRoom = async(userId: string, chatRoomId: string)=>{
+    try{
+        const user = await prisma.user.findUnique({
+            where:{id: userId},
+            select: {
+                username: true,
+                id: true
+            }
+        })
+        const room = await prisma.chatRoom.findUnique({
+            where: {id: chatRoomId},
+            select: {
+                title: true,
+                id: true
+            }
+        })
+        if(!user || !room) throw new Error('User or Room does not exist')
+        
+        const result = await prisma.userChatRoom.create({
+            data: {
+                userId: user.id,
+                chatRoomId: room.id
+            } 
+        })
+        return user;
+    }catch(error){
+        if(error instanceof Error) throw new Error(error.message)
+    }
+    
+    
+}

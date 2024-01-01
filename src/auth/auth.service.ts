@@ -7,11 +7,11 @@ import * as dotenv from 'dotenv'
 dotenv.config();
 
 export const findUserByEmail = async(email: string)=>{
-    return await prisma.user.findFirst({where: {email}})
+    return await prisma.user.findFirst({where: {email}, select: {id: true, email: true, username: true, password: true}})
 }
 
-export const findUserByUsername =async (username: string) => {
-    return await prisma.user.findFirst({where: {username}})
+export const findUserByUsername = async (username: string) => {
+    return await prisma.user.findFirst({where: {username}, select: {id: true, email: true, username: true, password: true}})
 }
 
 export const createUser = async(userData: Omit<Prisma.UserCreateInput, 'chatRooms' | 'messages'>)=>{
