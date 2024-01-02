@@ -1,4 +1,4 @@
-import { describe } from 'vitest'
+import {describe, expect, vi, it} from 'vitest'
+import * as ChatroomService from 'chatroom/chatroom.service'
 
-
-describe.skip('chatroom.service', ()=>{})
+describe.skip()

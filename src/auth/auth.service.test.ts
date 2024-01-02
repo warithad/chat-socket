@@ -17,7 +17,7 @@ vi.mock('bcrypt', ()=>({
     }
 }))
 
-describe.skip('auth.service', ()=>{
+describe('auth.service', ()=>{
     const env = process.env
     beforeEach(() => {
         vi.restoreAllMocks()
@@ -85,7 +85,7 @@ describe.skip('auth.service', ()=>{
         })
 
         it('should return valid jwt when secret key is available', ()=>{
-            process.env.SECRET_KEY = 'secret'
+            process.env.JWT_SECRET = 'secret'
             AuthService.generateJWT('userid')
             expect(jwt.sign).toBeCalled()
             expect(jwt.sign).toHaveBeenCalledWith({id: 'userid'}, 'secret', {expiresIn: 86400})

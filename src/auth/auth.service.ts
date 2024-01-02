@@ -4,8 +4,7 @@ import bcrypt from 'bcrypt'
 import jwt from 'jsonwebtoken'
 import dotenv from 'dotenv'
 
-dotenv.config();
-
+dotenv.config()
 export const findUserByEmail = async(email: string)=>{
     return await prisma.user.findFirst({where: {email}, select: {id: true, email: true, username: true, password: true}})
 }
