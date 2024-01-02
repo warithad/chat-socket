@@ -1,8 +1,8 @@
-import { Prisma } from "@prisma/client"
-import prisma from '../lib/prisma'
+import type { Prisma } from "@prisma/client"
+import prisma from 'lib/prisma'
 import bcrypt from 'bcrypt'
-import * as jwt from 'jsonwebtoken'
-import * as dotenv from 'dotenv'
+import jwt from 'jsonwebtoken'
+import dotenv from 'dotenv'
 
 dotenv.config();
 
@@ -21,7 +21,7 @@ export const createUser = async(userData: Omit<Prisma.UserCreateInput, 'chatRoom
         select: {
             id: true,
             username: true,
-            email: true
+            email: true,
         }
     })
 }
