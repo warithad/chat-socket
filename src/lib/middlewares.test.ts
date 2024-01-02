@@ -96,7 +96,7 @@ describe('Middlewares', ()=>{
         })
     })
 
-    describe.skip('socketErrorHandler', ()=>{
+    describe('socketErrorHandler', ()=>{
         let socket: Socket;
 
         beforeEach(() => {
@@ -120,7 +120,7 @@ describe('Middlewares', ()=>{
 
         it('should emit with appropriate error message of AppError instance', () => {
             const error = new AppError('unauthorized', 'Server error')
-            expect(socket.emit).toBeCalled()
+            socketErrorHandler(error, socket)
             expect(socket.emit).toBeCalledWith('error', {
                 err: {
                     code: 500,
