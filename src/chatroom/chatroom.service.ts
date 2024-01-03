@@ -1,12 +1,12 @@
 import { Prisma } from '@prisma/client'
 import prisma from 'lib/prisma'
 
-export const getChatRoomMembers =async(id: string)=>{
+export const getChatRoomMembers =async(chatRoomId: string)=>{
     return await prisma.userChatRoom.findMany({
         where: {
-            chatRoomId: id
+            chatRoomId
         }, 
-        select: {
+        include: {
             user: {
                 select: {
                     username: true,
@@ -14,7 +14,7 @@ export const getChatRoomMembers =async(id: string)=>{
                 }
             }
         }
-    })
+    }).then(userChatRooms => userChatRooms.map(({user}) => user));
 }
 
 export const getUserChatRooms = async(userId: string)=>{
@@ -40,7 +40,7 @@ export const getUserChatRoomIds = async(userId: string)=>{
 }
 
 export const getChatRoomMessages = async(id: string, startDate: Date, endDate: Date)=>{
-    const messages = await prisma.message.findMany({
+    return await prisma.message.findMany({
         where: {
             chatRoomId: id,
             createdAt: {
@@ -54,7 +54,6 @@ export const getChatRoomMessages = async(id: string, startDate: Date, endDate: D
         }
     })
 
-    return messages;
 }
 export const checkUserIsChatRoomMember = async(userId: string, chatRoomId: string)=>{
 
@@ -65,8 +64,7 @@ export const checkUserIsChatRoomMember = async(userId: string, chatRoomId: strin
         }
     })
 
-    if(!userExists)return true;
-    else return false;
+    return userExists ? true : false;
 }
 
 export const createMessage = async(messageData: Prisma.MessageCreateInput)=>{
@@ -104,9 +102,10 @@ export const joinChatRoom = async(userId: string, chatRoomId: string)=>{
                 id: true
             }
         })
-        if(!user || !room) throw new Error('User or Room does not exist')
+
+        if(!user || !room) {throw new Error('User or Room does not exist')}
         
-        const result = await prisma.userChatRoom.create({
+        await prisma.userChatRoom.create({
             data: {
                 userId: user.id,
                 chatRoomId: room.id
@@ -114,7 +113,7 @@ export const joinChatRoom = async(userId: string, chatRoomId: string)=>{
         })
         return user;
     }catch(error){
-        if(error instanceof Error) throw new Error(error.message)
+        if(error instanceof Error) console.error('An error was caught:', error.message)
     }
     
     
